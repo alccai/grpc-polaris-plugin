@@ -12,10 +12,13 @@ import (
 
 const (
 	PluginName            = "polaris"
-	PluginType            = "registry"
 	defaultConnectTimeout = time.Second
 	defaultMessageTimeout = time.Second
 	defaultProtocol       = "grpc"
+)
+
+var (
+	ErrPluginDecoderEmpty = fmt.Errorf("plugin decoder is empty")
 )
 
 func init() {
@@ -30,12 +33,12 @@ func (f *Factory) Destroy() error {
 }
 
 func (f *Factory) Type() string {
-	return PluginType
+	return registry.PluginType
 }
 
 func (f *Factory) Setup(name string, dec plugin.Decoder) error {
 	if dec == nil {
-		return fmt.Errorf("grpc-registry config decoder emtpy")
+		return ErrPluginDecoderEmpty
 	}
 	conf := &FactoryConfig{}
 	if err := dec.Decode(conf); err != nil {
@@ -45,7 +48,7 @@ func (f *Factory) Setup(name string, dec plugin.Decoder) error {
 }
 
 func newProvider(cfg *FactoryConfig) (api.ProviderAPI, error) {
-	var c *config.ConfigurationImpl
+	var c config.Configuration
 	if len(cfg.AddressList) > 0 {
 		addressList := strings.Split(cfg.AddressList, ",")
 		c = config.NewDefaultConfiguration(addressList)
@@ -54,18 +57,18 @@ func newProvider(cfg *FactoryConfig) (api.ProviderAPI, error) {
 	}
 	// 配置 cluster
 	if cfg.ClusterService.Discover != "" {
-		c.Global.GetSystem().GetDiscoverCluster().SetService(cfg.ClusterService.Discover)
+		c.GetGlobal().GetSystem().GetDiscoverCluster().SetService(cfg.ClusterService.Discover)
 	}
 	if cfg.ClusterService.HealthCheck != "" {
-		c.Global.GetSystem().GetHealthCheckCluster().SetService(cfg.ClusterService.HealthCheck)
+		c.GetGlobal().GetSystem().GetHealthCheckCluster().SetService(cfg.ClusterService.HealthCheck)
 	}
 	if cfg.ClusterService.Monitor != "" {
-		c.Global.GetSystem().GetMonitorCluster().SetService(cfg.ClusterService.Monitor)
+		c.GetGlobal().GetSystem().GetMonitorCluster().SetService(cfg.ClusterService.Monitor)
 	}
 	if cfg.Protocol == "" {
 		cfg.Protocol = defaultProtocol
 	}
-	c.Global.ServerConnector.Protocol = cfg.Protocol
+	c.GetGlobal().GetServerConnector().SetProtocol(cfg.Protocol)
 	if cfg.ConnectTimeout != 0 {
 		c.GetGlobal().GetServerConnector().SetConnectTimeout(time.Duration(cfg.ConnectTimeout) * time.Millisecond)
 	} else {
@@ -103,10 +106,7 @@ func register(conf *FactoryConfig) error {
 			DisableHealthCheck: conf.DisableHealthCheck,
 			Version:            conf.Version,
 		}
-		reg, err := newRegistry(provider, cfg)
-		if err != nil {
-			return err
-		}
+		reg := newRegistry(provider, cfg)
 		registry.Register(service.ServiceName, reg)
 	}
 	return nil

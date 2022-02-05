@@ -24,11 +24,11 @@ type Registry struct {
 	port     int
 }
 
-func NewRegistry(provider api.ProviderAPI, cfg *Config) (*Registry, error) {
+func NewRegistry(provider api.ProviderAPI, cfg *Config) registry.Registry {
 	return newRegistry(provider, cfg)
 }
 
-func newRegistry(provider api.ProviderAPI, cfg *Config) (*Registry, error) {
+func newRegistry(provider api.ProviderAPI, cfg *Config) *Registry {
 	if cfg.HeartBeat == 0 {
 		cfg.HeartBeat = DefaultHeartBeat
 	}
@@ -41,7 +41,7 @@ func newRegistry(provider api.ProviderAPI, cfg *Config) (*Registry, error) {
 	return &Registry{
 		provider: provider,
 		cfg:      cfg,
-	}, nil
+	}
 }
 
 func (r *Registry) Register(_ string, opt ...registry.Option) error {
