@@ -17,7 +17,6 @@ import (
 
 const (
 	scheme         = "polaris"
-	prefix         = scheme + "://"
 	optionsPrefix  = "?options="
 	keyDialOptions = "options"
 )
@@ -30,6 +29,12 @@ type DialOptions struct {
 	SrcService      string            `json:"src_service"`
 	// 可选，规则路由Meta匹配前缀，用于过滤作为路由规则的gRPC Header
 	HeaderPrefix []string `json:"header_prefix"`
+}
+
+func NewPolarisResolverBuilder(consumer api.ConsumerAPI) *PolarisResolverBuilder {
+	return &PolarisResolverBuilder{
+		consumer: consumer,
+	}
 }
 
 type PolarisResolverBuilder struct {
@@ -83,7 +88,7 @@ func (p *PolarisResolverBuilder) Build(
 	return d, nil
 }
 
-func (p PolarisResolverBuilder) Scheme() string {
+func (p *PolarisResolverBuilder) Scheme() string {
 	return scheme
 }
 

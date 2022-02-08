@@ -193,6 +193,8 @@ github.com/zhengheng7913/grpc-go-starter v0.0.0-20220205074420-bfcf1a88b18d h1:w
 github.com/zhengheng7913/grpc-go-starter v0.0.0-20220205074420-bfcf1a88b18d/go.mod h1:EwoufdsJX0RYvsopIPdRu/BuTJfp32I2gMU58VRWp4E=
 github.com/zhengheng7913/grpc-go-starter v0.0.0-20220205094036-ce49e88659f0 h1:ZMDlgSe/imJnoIoYlGb8rPffOuAQR+WbsTywaS2qzNA=
 github.com/zhengheng7913/grpc-go-starter v0.0.0-20220205094036-ce49e88659f0/go.mod h1:EwoufdsJX0RYvsopIPdRu/BuTJfp32I2gMU58VRWp4E=
+github.com/zhengheng7913/grpc-go-starter v0.0.0-20220206155749-bdbfbae6c4c7 h1:CXgN+acyHIlUZgT4wJ6pBh0eh6wguqddvMLjL8XCIhI=
+github.com/zhengheng7913/grpc-go-starter v0.0.0-20220206155749-bdbfbae6c4c7/go.mod h1:EwoufdsJX0RYvsopIPdRu/BuTJfp32I2gMU58VRWp4E=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=

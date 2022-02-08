@@ -45,8 +45,9 @@ type FactoryConfig struct {
 }
 
 type Service struct {
+	Name           string            `yaml:name`
 	Namespace      string            `yaml:"namespace"`
-	ServiceName    string            `yaml:"name"`
+	ServiceName    string            `yaml:"service_name"`
 	Token          string            `yaml:"token"`
 	InstanceID     string            `yaml:"instance_id"`
 	Weight         int               `yaml:"weight"`

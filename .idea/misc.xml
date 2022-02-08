@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="UnattendedHostPersistenceState">
+    <option name="openedFilesInfos">
+      <list>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="2371" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/registry/registry_factory.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/.gitignore" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="85" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/discovery/config.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="447" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/go.mod" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="26" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/discovery/discovery.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="113" />
+          <option name="fileUrl" value="file://$USER_HOME$/go/pkg/mod/github.com/zhengheng7913/grpc-go-starter@v0.0.0-20220206155749-bdbfbae6c4c7/plugin/api.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="829" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/discovery/resolver.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="1443" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/registry/config.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/registry/registry.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="615" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/discovery/discovery_factory.go" />
+        </OpenedFileInfo>
+      </list>
+    </option>
+  </component>
+</project>

@@ -61,9 +61,14 @@ func (f Factory) Setup(name string, dec plugin.Decoder) error {
 	if err != nil {
 		return err
 	}
-	d := newDiscovery(consumer, nil)
-	discovery.Register(PluginName, d)
-	resolver.Register(&PolarisResolverBuilder{})
+	for _, client := range cfg.Clients {
+		cfg := &Config{
+			Name: client.Name,
+		}
+		d := newDiscovery(consumer, cfg)
+		discovery.Register(cfg.Name, d)
+	}
+	resolver.Register(NewPolarisResolverBuilder(consumer))
 	return nil
 }
 

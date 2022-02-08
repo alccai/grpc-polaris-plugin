@@ -107,7 +107,7 @@ func register(conf *FactoryConfig) error {
 			Version:            conf.Version,
 		}
 		reg := newRegistry(provider, cfg)
-		registry.Register(service.ServiceName, reg)
+		registry.Register(service.Name, reg)
 	}
 	return nil
 }
