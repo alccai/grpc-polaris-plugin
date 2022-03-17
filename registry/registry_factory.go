@@ -102,7 +102,6 @@ func register(conf *FactoryConfig) error {
 			ServiceToken:       service.Token,
 			InstanceID:         service.InstanceID,
 			Metadata:           service.MetaData,
-			BindAddress:        service.BindAddress,
 			DisableHealthCheck: conf.DisableHealthCheck,
 			Version:            conf.Version,
 		}

@@ -11,13 +11,11 @@ import (
 	"google.golang.org/grpc/attributes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/resolver"
-	"strings"
 	"sync"
 )
 
 const (
 	scheme         = "polaris"
-	optionsPrefix  = "?options="
 	keyDialOptions = "options"
 )
 
@@ -45,18 +43,11 @@ func resolveTarget(target resolver.Target) (*DialOptions, error) {
 	options := &DialOptions{}
 	if len(target.Endpoint) > 0 {
 		endpoint := target.Endpoint
-		var optionsStr string
-		if strings.Index(endpoint, optionsPrefix) >= 0 {
-			tokens := strings.Split(endpoint, optionsPrefix)
-			if len(tokens) > 1 {
-				optionsStr = tokens[1]
-			}
-		}
-		if len(optionsStr) > 0 {
-			value, err := base64.URLEncoding.DecodeString(optionsStr)
+		if len(endpoint) > 0 {
+			value, err := base64.URLEncoding.DecodeString(endpoint)
 			if nil != err {
 				return nil, fmt.Errorf(
-					"fail to decode endpoint %s, options %s: %v", target.Endpoint, optionsStr, err)
+					"fail to decode endpoint %s %v", endpoint, err)
 			}
 			if err = json.Unmarshal(value, options); nil != err {
 				return nil, fmt.Errorf("fail to unmarshal options %s: %v", string(value), err)
@@ -79,8 +70,11 @@ func (p *PolarisResolverBuilder) Build(
 	d := &PolarisResolver{
 		ctx:      ctx,
 		cancel:   cancel,
+		cc:       cc,
+		rn:       make(chan struct{}, 1),
 		consumer: p.consumer,
 		options:  options,
+		target:   target,
 	}
 	d.wg.Add(1)
 	go d.watcher()
@@ -100,6 +94,7 @@ type PolarisResolver struct {
 	rn       chan struct{}
 	cc       resolver.ClientConn
 	options  *DialOptions
+	target   resolver.Target
 }
 
 func (pr *PolarisResolver) ResolveNow(options resolver.ResolveNowOptions) {
@@ -146,7 +141,7 @@ func (pr *PolarisResolver) watcher() {
 func (pr *PolarisResolver) lookup() (*resolver.State, error) {
 	instancesRequest := &api.GetInstancesRequest{}
 	instancesRequest.Namespace = pr.options.Namespace
-	instancesRequest.Service = pr.options.SrcService
+	instancesRequest.Service = pr.target.Authority
 	if len(pr.options.DstMetadata) > 0 {
 		instancesRequest.Metadata = pr.options.DstMetadata
 	}
@@ -177,7 +172,7 @@ func (pr *PolarisResolver) doWatch() (model.ServiceKey, <-chan model.SubScribeEv
 	watchRequest := &api.WatchServiceRequest{}
 	watchRequest.Key = model.ServiceKey{
 		Namespace: pr.options.Namespace,
-		Service:   pr.options.SrcService,
+		Service:   pr.target.Authority,
 	}
 	resp, err := pr.consumer.WatchService(watchRequest)
 	if nil != err {

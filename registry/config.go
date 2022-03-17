@@ -21,8 +21,10 @@ type Config struct {
 	Namespace string
 	// ServiceName 服务名
 	ServiceName string
-	// BindAddress 指定上报地址
-	BindAddress string
+
+	Port int
+
+	Host string
 	// Metadata 用户自定义 metadata 信息
 	Metadata map[string]string
 	// DisableHealthCheck 禁用健康检查
@@ -45,13 +47,12 @@ type FactoryConfig struct {
 }
 
 type Service struct {
-	Name           string            `yaml:name`
+	Name           string            `yaml:"name"`
 	Namespace      string            `yaml:"namespace"`
 	ServiceName    string            `yaml:"service_name"`
 	Token          string            `yaml:"token"`
 	InstanceID     string            `yaml:"instance_id"`
 	Weight         int               `yaml:"weight"`
-	BindAddress    string            `yaml:"bind_address"`
 	MetaData       map[string]string `yaml:"metadata"`
 	Protocol       string            `yaml:"protocol"`
 	EnableRegister bool              `yaml:"register_self"`

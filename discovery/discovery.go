@@ -31,15 +31,17 @@ func (d *Discovery) List(name string, opts ...discovery.Option) ([]*registry.Nod
 
 func (d *Discovery) Target(target string, opts ...discovery.Option) (string, error) {
 	options := &discovery.Options{}
-	//TODO: options转换dialOptions
-	dialOptions := &DialOptions{}
 	for _, o := range opts {
 		o(options)
+	}
+	dialOptions := &DialOptions{
+		Namespace:  options.Namespace,
+		SrcService: options.SrcService,
 	}
 	str, err := json.Marshal(dialOptions)
 	if err != nil {
 		return "", fmt.Errorf("marshal dialOptions error: %s", err)
 	}
 	endpoint := base64.URLEncoding.EncodeToString(str)
-	return target + optionsPrefix + endpoint, nil
+	return scheme + "://" + target + "/" + endpoint, nil
 }

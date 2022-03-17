@@ -6,8 +6,6 @@ import (
 	"github.com/polarismesh/polaris-go/pkg/model"
 	"github.com/zhengheng7913/grpc-go-starter/naming/registry"
 	"google.golang.org/grpc/grpclog"
-	"net"
-	"strconv"
 	"time"
 )
 
@@ -20,8 +18,6 @@ const (
 type Registry struct {
 	provider api.ProviderAPI
 	cfg      *Config
-	host     string
-	port     int
 }
 
 func NewRegistry(provider api.ProviderAPI, cfg *Config) registry.Registry {
@@ -44,19 +40,30 @@ func newRegistry(provider api.ProviderAPI, cfg *Config) *Registry {
 	}
 }
 
-func (r *Registry) Register(_ string, opt ...registry.Option) error {
-	opts := &registry.Options{}
+func (r *Registry) applyOption(opt ...registry.Option) {
+	options := &registry.Options{}
 	for _, o := range opt {
-		o(opts)
+		o(options)
 	}
-	address := opts.Address
-	if r.cfg.BindAddress != "" {
-		address = r.cfg.BindAddress
+	if options.Namespace != "" {
+		r.cfg.Namespace = options.Namespace
 	}
-	host, portRaw, _ := net.SplitHostPort(address)
-	port, _ := strconv.ParseInt(portRaw, 10, 64)
-	r.host = host
-	r.port = int(port)
+	if options.Port != 0 {
+		r.cfg.Port = int(options.Port)
+	}
+	if options.Host != "" {
+		r.cfg.Host = options.Host
+	}
+	if options.Protocol != "" {
+		r.cfg.Protocol = options.Protocol
+	}
+	if options.Namespace != "" {
+		r.cfg.ServiceName = options.ServiceName
+	}
+}
+
+func (r *Registry) Register(_ string, opt ...registry.Option) error {
+	r.applyOption(opt...)
 	if r.cfg.EnableRegister {
 		if err := r.register(); err != nil {
 			return err
@@ -71,8 +78,8 @@ func (r *Registry) register() error {
 		InstanceRegisterRequest: model.InstanceRegisterRequest{
 			Namespace:    r.cfg.Namespace,
 			Service:      r.cfg.ServiceName,
-			Host:         r.host,
-			Port:         r.port,
+			Host:         r.cfg.Host,
+			Port:         r.cfg.Port,
 			ServiceToken: r.cfg.ServiceToken,
 			Weight:       &r.cfg.Weight,
 			Metadata:     r.cfg.Metadata,
@@ -102,8 +109,8 @@ func (r *Registry) heartBeat() {
 					ServiceToken: r.cfg.ServiceToken,
 					Namespace:    r.cfg.Namespace,
 					InstanceID:   r.cfg.InstanceID,
-					Host:         r.host,
-					Port:         r.port,
+					Host:         r.cfg.Host,
+					Port:         r.cfg.Port,
 				},
 			}
 			if err := r.provider.Heartbeat(req); err != nil {
@@ -127,8 +134,8 @@ func (r *Registry) Deregister(_ string) error {
 			Namespace:    r.cfg.Namespace,
 			InstanceID:   r.cfg.InstanceID,
 			ServiceToken: r.cfg.ServiceToken,
-			Host:         r.host,
-			Port:         r.port,
+			Host:         r.cfg.Host,
+			Port:         r.cfg.Port,
 		},
 	}
 	if err := r.provider.Deregister(req); err != nil {
